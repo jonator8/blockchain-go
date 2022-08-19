@@ -1,0 +1,7 @@
+{
+  "genesis_time": "2022-08-19T00:00:00.000000000Z",
+  "chain_id": "go-blockchain-id",
+  "balances": {
+    "jonator": 1000000
+  }
+}

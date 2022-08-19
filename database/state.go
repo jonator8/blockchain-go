@@ -74,3 +74,36 @@ func (s *State) apply(tx Tx) error {
 
 	return nil
 }
+
+func (s *State) Add(tx Tx) error {
+	if err := s.apply(tx); err != nil {
+		return err
+	}
+
+	s.txMemPool = append(s.txMemPool, tx)
+
+	return nil
+}
+
+func (s *State) Persist() error {
+	memPool := make([]Tx, len(s.txMemPool))
+	copy(memPool, s.txMemPool)
+
+	for i := 0; i < len(memPool); i++ {
+		txJson, err := json.Marshal(memPool[i])
+		if err != nil {
+			return err
+		}
+
+		if _, err = s.dbFile.Write(append(txJson, '\n')); err != nil {
+			return err
+		}
+		s.txMemPool = s.txMemPool[1:]
+	}
+
+	return nil
+}
+
+func (s *State) Close() {
+	s.dbFile.Close()
+}
